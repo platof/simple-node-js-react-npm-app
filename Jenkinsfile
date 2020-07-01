@@ -14,11 +14,11 @@ pipeline {
         
         stage('Build docker image') {
             steps {
-                script {
-                    app = docker.build('platof/my-react-app')
+                
+                    app = docker.build("platof/my-react-app")
                     app.inside {
                         sh 'echo "image built"'
-                    }
+                    
                 }
                 
             }
