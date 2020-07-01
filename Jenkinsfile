@@ -1,25 +1,41 @@
 pipeline {
     agent any
     
-    environment {
-        CI = 'true'
-    }
     stages {
-        stage('Build') {
+        stage('Inital Build ') {
             steps {
+                // Install the dependencies
                 sh 'npm install'
-            }
-        }
-        stage('Test') {
-            steps {
-                sh 'npm test'
-            }
-        }
-        stage('Deliver') {
-            steps {
+
+                //Build the project
                 sh 'npm run build'
-                sh 'npm start'
             }
         }
+        
+        stage('Build docker image') {
+            steps {
+                script {
+                    app = docker.build('platof/my-react-app')
+                    app.inside {
+                        sh 'echo "image built"'
+                    }
+                }
+                
+            }
+        }
+
+        stage('Push Docker image'){
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') {
+                        app.push("${env.BUILD_NUMBER}")
+                        app.push("latest")
+                    }
+                }
+            }
+        }
+
+            
+        
     }
 }
