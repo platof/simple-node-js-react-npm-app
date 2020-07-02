@@ -1,10 +1,4 @@
 pipeline {
-    environment {
-        registry = "platof/my-react-app"
-        registryCredential = 'docker_hub_login'
-        dockerImage = ''
-    }
-
 
     agent any
     
@@ -20,24 +14,11 @@ pipeline {
         }
         
         stage('Build docker image') {
+            agent any
             steps {
-                script {
-                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
-                    }
+                sh 'docker build -t platof/my-react-app .'
                 }
         }
-
-        stage('Push Docker image'){
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') {
-                        dockerImage.push("${env.BUILD_NUMBER}")
-                        dockerImage.push("latest")
-                    }
-                }
-            }
-        }
-
             
         
     }
