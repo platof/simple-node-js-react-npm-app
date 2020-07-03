@@ -29,9 +29,8 @@ pipeline {
             }
         }
         stage('Deploy to Production') {
+            agent any
             steps {
-                input 'Deploy to Production?'
-                milestone(1)
                 withCredentials([usernamePassword(credentialsId: 'docker_hub_login', passwordVariable: 'docker_hub_loginPassword', usernameVariable: 'docker_hub_loginUser' )]) {
                     script {
                         sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker pull platof/my-react-app:${env.BUILD_NUMBER}\""
