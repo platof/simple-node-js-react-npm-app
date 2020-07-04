@@ -31,16 +31,16 @@ pipeline {
         stage('Deploy to Production') {
             agent any
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker_hub_login', passwordVariable: 'docker_hub_loginPassword', usernameVariable: 'docker_hub_loginUser' )]) {
+                withCredentials([usernamePassword(credentialsId: 'server_login', passwordVariable: 'USERPASS', usernameVariable: 'USERNAME' )]) {
                     script {
-                        sh "sshpass -p '$upass' -v ssh -o StrictHostKeyChecking=no vagrant@192.168.56.60 \"docker pull platof/my-react-app\""
+                        sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@prod_ip \"docker pull platof/my-react-app\""
                         try {
-                            sh "sshpass -p '$upass' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker stop my-react-app\""
-                            sh "sshpass -p '$upass' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker rm my-react-app\""
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker stop my-react-app\""
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker rm my-react-app\""
                         } catch (err) {
                             echo: 'caught error: $err'
                         }
-                        sh "sshpass -p '$upass' -v ssh -o StrictHostKeyChecking=no vagrant@192.168.56.60 \"docker run --restart always --name my-react-app -p 3000:3000 -d platof/my-react-app\""
+                        sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@prod_ip \"docker run --restart always --name my-react-app -p 3000:3000 -d platof/my-react-app\""
                     }
                 }
             }
