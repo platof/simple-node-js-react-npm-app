@@ -35,8 +35,8 @@ pipeline {
                     script {
                         sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@192.168.56.60 \"docker pull platof/my-react-app\""
                         try {
-                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$192.168.56.60 \"docker stop my-react-app\""
-                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$192.168.56.60 \"docker rm my-react-app\""
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@192.168.56.60 \"docker stop my-react-app\""
+                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@192.168.56.60 \"docker rm my-react-app\""
                         } catch (err) {
                             echo: 'caught error: $err'
                         }
